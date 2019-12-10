@@ -36,7 +36,7 @@ public class ManageController {
 
     //调用服务层获取数据
     @RequestMapping("attrInfoList")
-    public List<BaseAttrInfo> attrInfoList(String catalog3Id){
+    public List<BaseAttrInfo> attrInfoList(BaseAttrInfo baseAttrInfo,String catalog3Id){
         return manageService.getAttrInfoList(catalog3Id);
     }
 

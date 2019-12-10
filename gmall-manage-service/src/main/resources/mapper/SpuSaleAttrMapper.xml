@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--namespace 接口全路径-->
+<mapper namespace="com.atguigu.gmall0624.manage.mapper.SpuSaleAttrMapper">
+    <resultMap id="spuSaleAttrMap" type="com.atguigu.gmall0624.bean.SpuSaleAttr" autoMapping="true">
+        <id property="id" column="id"></id>
+        <!--1对多-->
+        <!--    List<SpuSaleAttrValue> spuSaleAttrValueList;-->
+        <collection property="spuSaleAttrValueList" ofType="com.atguigu.gmall0624.bean.SpuSaleAttrValue" autoMapping="true">
+            <!--id 相同则起别名 -->
+            <id property="id" column="sale_attr_value_id"></id>
+        </collection>
+    </resultMap>
+    <!--
+        写注释！
+    -->
+    <select id="selectSpuSaleAttrList" resultMap="spuSaleAttrMap">
+        select sa.id ,sa.spu_id, sa.sale_attr_name,sa.sale_attr_id,
+        sv.id sale_attr_value_id,
+        sv.sale_attr_value_name
+        from spu_sale_attr sa inner join spu_sale_attr_value  sv
+        on  sa.spu_id=sv.spu_id and sa.sale_attr_id=sv.sale_attr_id
+        where  sa.spu_id=#{0}
+    </select>
+</mapper>

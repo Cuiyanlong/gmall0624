@@ -24,7 +24,7 @@ public interface ManageService {
     List<BaseCatalog3> getCatalog3(String catalog2Id);
 
 
-    List<BaseAttrInfo> getAttrInfoList(String catalog3Id);
+    List<BaseAttrInfo> getAttrInfoList(BaseAttrInfo baseAttrInfo);
 
     //保存平台属性
     void saveAttrInfo(BaseAttrInfo baseAttrInfo);
@@ -33,4 +33,56 @@ public interface ManageService {
 
     BaseAttrInfo getAttrInfo(String attrId);
 
+    /**
+     *
+     * @param catalog3Id
+     * @return
+     */
+    List<SpuInfo> getSpuList(String catalog3Id);
+
+    /**
+     *根据Spuinfo属性查询spuinfo
+     * @param spuInfo
+     * @return
+     */
+    List<SpuInfo> getSpuList(SpuInfo spuInfo);
+
+    /**
+     * 查询所有销售属性
+     * @return
+     */
+    List<BaseSaleAttr> getBaseSaleAttrList();
+
+    /**
+     * 保存spuInfo数据
+     * @param spuInfo
+     */
+    void saveSpuInfo(SpuInfo spuInfo);
+
+    /**
+     * 根据属性查找图片集合
+     * @param spuImage
+     * @return
+     */
+    List<SpuImage> getSpuImageList(SpuImage spuImage);
+
+    /**
+     * 根据三级分类id查询平台信息
+     * @param catalog3Id
+     * @return
+     */
+    List<BaseAttrInfo> getAttrInfoList(String catalog3Id);
+
+    /**
+     * 根据spuID查询销售属性集合
+     * @param spuId
+     * @return
+     */
+    List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
+
+    /**
+     *大保存
+     * @param skuInfo
+     */
+    void saveSkuInfo(SkuInfo skuInfo);
 }
