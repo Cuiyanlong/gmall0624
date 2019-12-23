@@ -15,4 +15,7 @@ public class BaseAttrValue implements Serializable {
     private String valueName;
     @Column
     private String attrId;
+
+    //声明一个属性来存储最新的urlParam
+    private String urlParam;
 }

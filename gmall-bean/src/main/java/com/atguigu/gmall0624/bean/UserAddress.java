@@ -8,23 +8,20 @@ import java.io.Serializable;
 
 @Data
 public class UserAddress implements Serializable {
-    @Id
+
+    // 属性字段
     @Column
+    @Id
     private String id;
     @Column
-    private String loginName;
+    private String userAddress;
     @Column
-    private String nickName;
+    private String userId;
     @Column
-    private String passwd;
-    @Column
-    private String name;
+    private String consignee;
     @Column
     private String phoneNum;
     @Column
-    private String email;
-    @Column
-    private String headImg;
-    @Column
-    private String userLevel;
+    private String isDefault;
+
 }

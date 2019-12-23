@@ -6,9 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Data
-public class UserInfo {
+public class UserInfo implements Serializable{
 
     //以下注解都是通用mapper的
     @Id //主键
