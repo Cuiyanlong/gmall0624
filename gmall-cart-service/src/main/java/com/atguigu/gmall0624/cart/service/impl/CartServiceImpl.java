@@ -37,9 +37,6 @@ public class CartServiceImpl implements CartService {
         2.  购物车中没有该商品时，直接添加
         3.  先mysql 后redis
          */
-
-
-
         // 获取jedis
         Jedis jedis = redistUtil.getJedis();
 
