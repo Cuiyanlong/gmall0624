@@ -9,6 +9,7 @@ import com.atguigu.gmall0624.service.CartService;
 import com.atguigu.gmall0624.service.ManageService;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,6 +47,7 @@ public class CartController {
                 CookieUtil.setCookie(request,response,"user-key",userId,7*24*3600,false);
             }
         }
+
         // 添加购物车
         cartService.addToCart(skuId,userId,Integer.parseInt(skuNum));
         SkuInfo skuInfo = manageService.getSkuInfo(skuId);
@@ -70,7 +72,6 @@ public class CartController {
             }
         }else {
             // 登录情况
-            // 走未登录 临时用户Id
             String userTempId  = CookieUtil.getCookieValue(request, "user-key", false);
             List<CartInfo> cartInfoNoLoginList = new ArrayList<>();
             if (userTempId!=null){
@@ -82,7 +83,6 @@ public class CartController {
                     cartInfoList = cartService.mergeToCartList(cartInfoNoLoginList,userId);
                     // 删除未登录数据
                     cartService.deleteCartList(userTempId);
-
                 }
             }
             // 如果临时用户id 为空 或者未登录购物车集合中没有数据
@@ -94,7 +94,6 @@ public class CartController {
 
         // 保存到作用域
         request.setAttribute("cartInfoList",cartInfoList);
-
         return "cartList";
     }
 
@@ -113,12 +112,12 @@ public class CartController {
         if (userId==null){
             // 获取未登录的临时用户Id
             userId = CookieUtil.getCookieValue(request, "user-key", false);
-        }
+    }
         // 调用服务层方法
         cartService.checkCart(skuId,userId,isChecked);
     }
 
-    // 去结算
+    // 去结算  toTrade去结算，
     @RequestMapping("toTrade")
     @LoginRequire
     public String toTrade(HttpServletRequest request){
