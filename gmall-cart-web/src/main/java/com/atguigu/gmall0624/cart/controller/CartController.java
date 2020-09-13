@@ -142,5 +142,16 @@ public class CartController {
         return "redirect://trade.gmall.com/trade";
     }
 
+    @RequestMapping("/deleteCart")
+    public String deleteCart(HttpServletRequest request){
+
+        String skuId = request.getParameter("skuId");
+        int i =1;
+//        int i = cartService.deleteCart(skuId);
+        if (i > 0){
+            return "success";
+        }
+        return "fial";
+    }
 
 }
