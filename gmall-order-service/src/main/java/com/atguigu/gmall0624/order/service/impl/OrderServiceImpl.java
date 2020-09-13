@@ -108,9 +108,9 @@ public class OrderServiceImpl implements OrderService {
         Jedis jedis = redistUtil.getJedis();
         // 定义一个key
         String tradeNoKey = "user:"+userId+":tradeCode";
-
+        //删除流水号
         jedis.del(tradeNoKey);
-
+        //关闭
         jedis.close();
     }
 
@@ -232,6 +232,14 @@ public class OrderServiceImpl implements OrderService {
         }
         map.put("details",mapArrayList);
         return map;
+        /**
+         * 创建一个集合泛型
+         * 遍历想要往集合里添加的信息
+         * 添加的信息是map，就创建一个map
+         * 将信息里的详细内容全部放到map里
+         * 最后将map放进集合里
+         *
+         */
     }
 
     /**

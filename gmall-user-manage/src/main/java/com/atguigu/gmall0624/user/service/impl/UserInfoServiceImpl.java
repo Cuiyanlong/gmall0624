@@ -85,6 +85,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfo.setPasswd(newPassword);
 
         UserInfo info = userInfoMapper.selectOne(userInfo);
+
         if (info!=null){
 
             //获取Jedis

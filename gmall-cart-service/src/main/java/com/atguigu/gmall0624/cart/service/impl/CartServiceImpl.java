@@ -64,7 +64,7 @@ public class CartServiceImpl implements CartService {
         Example example = new Example(CartInfo.class);
         example.createCriteria().andEqualTo("skuId",skuId).andEqualTo("userId",userId);
         CartInfo cartInfoExist = cartInfoMapper.selectOneByExample(example);
-        if (cartInfoExist!=null){
+        if (cartInfoExist != null){
             // 购物车中有数据
             cartInfoExist.setSkuNum(cartInfoExist.getSkuNum()+skuNum);
 
@@ -118,6 +118,7 @@ public class CartServiceImpl implements CartService {
             jedis.expire(cartKey,ttl.intValue());
         }
     }
+
     @Override
     public List<CartInfo> getCartList(String userId) {
         List<CartInfo> cartInfoList = new ArrayList<>();
@@ -293,12 +294,11 @@ public class CartServiceImpl implements CartService {
 
         // 一个对象，给对象的属性重新赋值！
         cartInfo.setIsChecked(isChecked);
-
+        //将获取的信息进行勾选的赋值，
         // 放入缓存
-        jedis.hset(cartKey,skuId,JSON.toJSONString(cartInfo));
+        jedis.hset(cartKey, skuId, JSON.toJSONString(cartInfo));
         // mysql
         // sql 文： update cartInfo set ischecked = ? where userId = ? and skuId = ?
-
         // cartInfo 修改的数据 ，example 修改的条件
         CartInfo cartInfoUpd = new CartInfo();
         cartInfoUpd.setIsChecked(isChecked);
@@ -334,6 +334,7 @@ public class CartServiceImpl implements CartService {
         jedis.close();
         return cartInfoList;
     }
+
 
     // 根据用户Id 查询数据库
     public List<CartInfo> loadCartCache(String userId) {

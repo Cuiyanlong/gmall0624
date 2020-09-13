@@ -6,7 +6,6 @@ import com.atguigu.gmall0624.bean.*;
 import com.atguigu.gmall0624.config.LoginRequire;
 import com.atguigu.gmall0624.service.*;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +20,7 @@ public class OrderController {
 
     //  select * from userAddress where userId = ?
 
-    //    @Autowired
+    //  @Autowired
     @Reference
     private UserInfoService userInfoService;
 
@@ -40,22 +39,20 @@ public class OrderController {
     @RequestMapping("trade")
     //@ResponseBody // 第一个作用：返回json 字符串。第二个作用：将控制器中的数据直接输入到一个空白页！
     @LoginRequire
-    public String trade(HttpServletRequest request){
+    public String trade(HttpServletRequest request) {
         // 获取用户Id
         String userId = (String) request.getAttribute("userId");
         // 得到用户的收货地址列表
         // return userInfoService.findUserAddressListByUserId(userId);
         List<UserAddress> userAddressList = userInfoService.findUserAddressListByUserId(userId);
-
         // 获取购物车中的数据：
         List<CartInfo> cartInfoList = cartService.getCartCheckedList(userId);
 
         // 保存订单明细数据，订单明细数据来自于购物车的!
         ArrayList<OrderDetail> detailsList = new ArrayList<>();
-        if (cartInfoList!=null && cartInfoList.size()>0){
+        if (cartInfoList != null && cartInfoList.size() > 0) {
             for (CartInfo cartInfo : cartInfoList) {
                 OrderDetail orderDetail = new OrderDetail();
-
                 orderDetail.setSkuId(cartInfo.getSkuId());
                 orderDetail.setSkuName(cartInfo.getSkuName());
                 orderDetail.setImgUrl(cartInfo.getImgUrl());
@@ -63,7 +60,6 @@ public class OrderController {
                 orderDetail.setOrderPrice(cartInfo.getCartPrice());
                 // 添加到订单明细集合中
                 detailsList.add(orderDetail);
-
             }
         }
         // 计算总金额
@@ -73,26 +69,27 @@ public class OrderController {
         orderInfo.sumTotalAmount();
 
         // 保存作用域，给页面渲染
-        request.setAttribute("detailsList",detailsList);
+        request.setAttribute("detailsList", detailsList);
 
-        request.setAttribute("totalAmount",orderInfo.getTotalAmount());
+        request.setAttribute("totalAmount", orderInfo.getTotalAmount());
 
-        request.setAttribute("userAddressList",userAddressList);
+        request.setAttribute("userAddressList", userAddressList);
         // 将流水号保存到后台
         String tradeNo = orderService.getTradeNo(userId);
 
-        request.setAttribute("tradeNo",tradeNo);
+        request.setAttribute("tradeNo", tradeNo);
         return "trade";
     }
+
     // http://trade.gmall.com/submitOrder
     @RequestMapping("submitOrder")
     @LoginRequire
-    public String submitOrder(OrderInfo orderInfo,HttpServletRequest request){
+    public String submitOrder(OrderInfo orderInfo, HttpServletRequest request) {
         // 获取页面提交的流水号
         String tradeNo = request.getParameter("tradeNo");
 
         // 支付使用
-        String outTradeNo = "ATGUIGU"+System.currentTimeMillis()+""+new Random().nextInt(1000);
+        String outTradeNo = "ATGUIGU" + System.currentTimeMillis() + "" + new Random().nextInt(1000);
         orderInfo.setOutTradeNo(outTradeNo);
 
         // 获取用户Id
@@ -101,22 +98,22 @@ public class OrderController {
         // 调用比较方法
         boolean result = orderService.checkTradeCode(userId, tradeNo);
         // 表示比较失败！
-        if (!result){
-            request.setAttribute("errMsg","不能重复提交订单！");
+        if (!result) {
+            request.setAttribute("errMsg", "不能重复提交订单！");
             return "tradeFail";
         }
         // 删除流水号
         orderService.deleteTradeCode(userId);
-
+        //提交订单防止表单重复提交，也要验证库存，
         // 验证库存：
         List<OrderDetail> orderDetailList = orderInfo.getOrderDetailList();
-        if (orderDetailList!=null && orderDetailList.size()>0){
+        if (orderDetailList != null && orderDetailList.size() > 0) {
             for (OrderDetail orderDetail : orderDetailList) {
                 // 调用库存接库
-                boolean flag = orderService.checkStock(orderDetail.getSkuId(),orderDetail.getSkuNum());
+                boolean flag = orderService.checkStock(orderDetail.getSkuId(), orderDetail.getSkuNum());
                 // flag =true 表示验证通过！
-                if (!flag){
-                    request.setAttribute("errMsg",orderDetail.getSkuName()+"库存不足,请重新下单！");
+                if (!flag) {
+                    request.setAttribute("errMsg", orderDetail.getSkuName() + "库存不足,请重新下单！");
                     return "tradeFail";
                 }
 
@@ -125,7 +122,7 @@ public class OrderController {
 
                 // skuInfo.getPrice(); orderDetail.getOrderPrice();
                 // 价格有变动
-                if (skuInfo.getPrice().compareTo(orderDetail.getOrderPrice())!=0){
+                if (skuInfo.getPrice().compareTo(orderDetail.getOrderPrice()) != 0) {
                     // 查询最新价格放入缓存！
                     cartService.loadCartCache(userId);
                 }
@@ -135,20 +132,21 @@ public class OrderController {
         // 保存订单
         String orderId = orderService.saveOrder(orderInfo);
         // 开启延迟队列：时间{根据商品过期时间来定!}
-        paymentService.closeOrderInfo(orderInfo.getOutTradeNo(),60*60);
+        paymentService.closeOrderInfo(orderInfo.getOutTradeNo(), 60 * 60);
         //  支付页面
-        return  "redirect://payment.gmall.com/index?orderId="+orderId;
+        return "redirect://payment.gmall.com/index?orderId=" + orderId;
     }
+
     // http://order.gmall.com/orderSplit?orderId=xxx&wareSkuMap=xxx
     @RequestMapping("orderSplit")
     @ResponseBody
-    public String orderSplit(HttpServletRequest request){
+    public String orderSplit(HttpServletRequest request) {
         String orderId = request.getParameter("orderId");
         String wareSkuMap = request.getParameter("wareSkuMap");
 
         // 返回的子订单的集合字符串Json
         // wareSkuMap = [{"wareId":"1","skuIds":["2","10"]},{"wareId":"2","skuIds":["3"]}]
-        List<OrderInfo> subOrderInfoList = orderService.orderSplit(orderId,wareSkuMap);
+        List<OrderInfo> subOrderInfoList = orderService.orderSplit(orderId, wareSkuMap);
         // 声明一个集合来存储map
         ArrayList<Map> mapArrayList = new ArrayList<>();
         // 将每个orderInfo 变成map ，map 中就是子订单
@@ -160,6 +158,6 @@ public class OrderController {
 
         }
         return JSON.toJSONString(mapArrayList);
-
     }
+
 }

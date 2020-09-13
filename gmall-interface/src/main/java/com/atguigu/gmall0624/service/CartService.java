@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface CartService {
 
-    // 接口 添加购物车数据
-
     /**
      * 添加购物车
      * @param skuId 商品Id

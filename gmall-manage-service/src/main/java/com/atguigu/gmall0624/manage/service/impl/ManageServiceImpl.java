@@ -165,7 +165,6 @@ public class ManageServiceImpl implements ManageService {
 
     @Override
     public List<SpuInfo> getSpuList(SpuInfo spuInfo) {
-
         return spuInfoMapper.select(spuInfo);
     }
 

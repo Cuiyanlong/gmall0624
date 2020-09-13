@@ -6,7 +6,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 public class RedistUtil {
     /**
-     * 1,创建连接池
+     * 1, 创建连接池
      * 2，初始化连接池
      * 3，从连接池获取Jedis
      */

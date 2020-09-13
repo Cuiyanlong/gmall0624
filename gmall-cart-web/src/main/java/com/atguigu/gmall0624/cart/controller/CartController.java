@@ -68,7 +68,8 @@ public class CartController {
             String userTempId  = CookieUtil.getCookieValue(request, "user-key", false);
             if (userTempId!=null){
                 // 获取未登录购物车数据
-                cartInfoList = cartService.getCartList(userTempId);
+                final List<CartInfo> cartList = cartService.getCartList(userTempId);
+                cartInfoList = cartList;
             }
         }else {
             // 登录情况
@@ -89,9 +90,7 @@ public class CartController {
             if (userTempId==null || (cartInfoNoLoginList==null || cartInfoNoLoginList.size()==0)){
                 cartInfoList = cartService.getCartList(userId);
             }
-
         }
-
         // 保存到作用域
         request.setAttribute("cartInfoList",cartInfoList);
         return "cartList";

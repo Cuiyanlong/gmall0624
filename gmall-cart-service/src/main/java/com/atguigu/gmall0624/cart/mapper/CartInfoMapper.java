@@ -8,3 +8,5 @@ import java.util.List;
 public interface CartInfoMapper extends Mapper<CartInfo> {
     List<CartInfo> selectCartListWithCurPrice(String userId);
 }
+
+
