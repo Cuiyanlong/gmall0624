@@ -48,7 +48,7 @@ public class CartServiceImpl implements CartService {
             // 加载数据库的数据到缓存！
             loadCartCache(userId);
         }
-
+        //崔艳龙
         // hash  hset(key,field,value)
         // key = user:userId:cart field = skuId value= cartInfo的字符串
 
