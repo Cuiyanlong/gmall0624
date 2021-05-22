@@ -116,6 +116,7 @@ public class CartController {
         cartService.checkCart(skuId,userId,isChecked);
     }
 
+    // 测试merge
     // 去结算  toTrade去结算，
     @RequestMapping("toTrade")
     @LoginRequire
